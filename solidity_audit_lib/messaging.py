@@ -78,14 +78,6 @@ class AuditBase(BaseModel):
                     "Unchecked call, Gas griefing, Unguarded function, Invalid Code, et cetera.",
     )
 
-    # @field_validator("vulnerability_class", mode="before")
-    # def validate_vulnerability_class(cls, v):
-    #     if isinstance(v, str):
-    #         if v not in KnownVulnerability._value2member_map_:
-    #             return VulnerabilityClass(type=OtherVulnerability(description=v))
-    #         return VulnerabilityClass(type=KnownVulnerability(v))
-    #     return v
-
 
 class OpenAIVulnerabilityReport(AuditBase):
     test_case: str | None = Field(

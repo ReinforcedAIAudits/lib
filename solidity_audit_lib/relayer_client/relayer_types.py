@@ -5,7 +5,7 @@ from solidity_audit_lib.messaging import SignedMessage
 
 __all__ = [
     'RelayerMessage', 'RegisterParams', 'RegisterMessage', 'MinerStorage', 'ValidatorStorage', 'StorageMessage',
-    'TaskModel', 'PerformAuditMessage'
+    'TaskModel', 'PerformAuditMessage', 'AxonInfo', 'ResultModel'
 ]
 
 
@@ -49,3 +49,17 @@ class TaskModel(SignedMessage):
 
 class PerformAuditMessage(RegisterMessage):
     task: TaskModel
+
+
+class AxonInfo(pydantic.BaseModel):
+    uid: int
+    ip: str
+    port: int
+    hotkey: str | None
+    coldkey: str | None
+
+
+class ResultModel(pydantic.BaseModel):
+    success: bool
+    error: str | None = None
+    result: dict | None = None
