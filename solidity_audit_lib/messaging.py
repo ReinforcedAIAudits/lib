@@ -16,14 +16,16 @@ def sign(data: bytes, keypair: KeypairType) -> typing.Tuple[str, str]:
     return "0x" + keypair.sign(data).hex(), keypair.ss58_address
 
 
-def verify(data: bytes, signature: str, ss58_address: str) -> bool | Exception:
+def verify(data: bytes, signature: str, ss58_address: str, safe=True) -> bool:
     if not signature or not ss58_address:
         return False
     try:
         vk = SubstrateKeypair(ss58_address=ss58_address)
         return vk.verify(signature=signature, data=data)
     except Exception as e:
-        return e
+        if not safe:
+            raise e
+        return False
 
 
 class SignedMessage(BaseModel):
@@ -40,5 +42,5 @@ class SignedMessage(BaseModel):
     def sign(self, keypair: KeypairType):
         self.signature, self.ss58_address = sign(self.to_signable(), keypair)
 
-    def verify(self) -> bool | Exception:
-        return verify(self.to_signable(), self.signature, self.ss58_address)
+    def verify(self, safe=True) -> bool:
+        return verify(self.to_signable(), self.signature, self.ss58_address, safe=safe)
