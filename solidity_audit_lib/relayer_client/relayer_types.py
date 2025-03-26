@@ -38,7 +38,7 @@ class ValidatorStorage(SignedMessage):
     hotkeys: dict[str, str]
 
 
-class StorageMessage(RegisterMessage):
+class StorageMessage(RelayerMessage):
     storage: dict
 
 
@@ -47,7 +47,7 @@ class TaskModel(SignedMessage):
     contract_code: str
 
 
-class PerformAuditMessage(RegisterMessage):
+class PerformAuditMessage(RelayerMessage):
     task: TaskModel
 
 
