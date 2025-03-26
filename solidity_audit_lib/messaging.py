@@ -119,5 +119,8 @@ class ContractTask(SignedMessage):
     contract_code: str
 
 
-class MinerStorage(SignedMessage):
-    collection_id: int
+class MinerResponseMessage(SignedMessage):
+    token_id: int
+    collection_id: str
+    uid: int
+    report: list[VulnerabilityReport]
