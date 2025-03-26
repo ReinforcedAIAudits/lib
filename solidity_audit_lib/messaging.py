@@ -2,12 +2,11 @@ import json
 import typing
 
 from bittensor import Keypair as BTKeypair  # Bittensor
+from pydantic import BaseModel, Field, AliasChoices, AliasGenerator, ConfigDict
+from pydantic.alias_generators import to_camel, to_snake
 from substrateinterface import Keypair as SubstrateKeypair
-from pydantic import BaseModel, Field
-
 
 __all__ = ['KeypairType', 'sign', 'verify', 'SignedMessage']
-
 
 KeypairType = typing.Union[BTKeypair, SubstrateKeypair]
 
@@ -44,3 +43,80 @@ class SignedMessage(BaseModel):
 
     def verify(self, safe=True) -> bool:
         return verify(self.to_signable(), self.signature, self.ss58_address, safe=safe)
+
+
+class AuditBase(BaseModel):
+    model_config = ConfigDict(
+        alias_generator=AliasGenerator(
+            validation_alias=lambda field_name: AliasChoices(
+                to_camel(field_name),
+                to_snake(field_name),
+            ),
+            serialization_alias=to_camel,
+        )
+    )
+    from_line: int = Field(
+        ...,
+        title="From Line",
+        description="The starting line number of the vulnerability in the source code. The line numbers start from one.",
+        serialization_alias="from",
+        validation_alias=AliasChoices("from", "from_line", "fromLine"),
+    )
+    to_line: int = Field(
+        ...,
+        title="To Line",
+        description="The ending line number of the vulnerability in the source code (inclusive).",
+        serialization_alias="to",
+        validation_alias=AliasChoices("to", "to_line", "toLine"),
+    )
+    vulnerability_class: str = Field(
+        ...,
+        title="Vulnerability Class",
+        description="The category of the vulnerability. "
+                    "E.g. Reentrancy, Bad randomness, Forced reception, Integer overflow, Race condition, "
+                    "Unchecked call, Gas griefing, Unguarded function, Invalid Code, et cetera.",
+    )
+
+    # @field_validator("vulnerability_class", mode="before")
+    # def validate_vulnerability_class(cls, v):
+    #     if isinstance(v, str):
+    #         if v not in KnownVulnerability._value2member_map_:
+    #             return VulnerabilityClass(type=OtherVulnerability(description=v))
+    #         return VulnerabilityClass(type=KnownVulnerability(v))
+    #     return v
+
+
+class OpenAIVulnerabilityReport(AuditBase):
+    test_case: str | None = Field(
+        None,
+        title="Test Case",
+        description="A code example that exploits the vulnerability.",
+    )
+    description: str | None = Field(
+        None,
+        title="Description",
+        description="Human-readable vulnerability description, in markdown",
+    )
+    prior_art: list[str] = Field(
+        default_factory=list,
+        title="Prior Art",
+        description="Similar vulnerabilities encountered in wild before",
+    )
+    fixed_lines: str | None = Field(
+        None,
+        title="Fixed Lines",
+        description="Fixed version of the original source.",
+    )
+
+
+class VulnerabilityReport(OpenAIVulnerabilityReport):
+    is_suggestion: bool = Field(False, title="Is Suggestion", description="Whether the fix is a suggestion or not")
+
+
+class ContractTask(SignedMessage):
+    uid: int
+    contract_code: str
+
+
+class MinerStorage(SignedMessage):
+    collection_id: int
