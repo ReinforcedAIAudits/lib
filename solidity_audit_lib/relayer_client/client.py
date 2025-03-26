@@ -64,6 +64,6 @@ class RelayerClient(object):
     def perform_audit(self, signer: KeypairType, uid: int, code: str) -> ResultModel:
         task = TaskModel(uid=uid, contract_code=code)
         task.sign(signer)
-        msg = PerformAuditMessage(task=task.model_dump())
+        msg = PerformAuditMessage(network_id=self.network_id, subnet_uid=self.subnet_uid, task=task.model_dump())
         msg.sign(signer)
         return ResultModel(**self._call('miner.perform_audit', msg.model_dump()))
