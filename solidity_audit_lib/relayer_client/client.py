@@ -1,4 +1,3 @@
-import pydantic
 import requests
 
 from solidity_audit_lib.messaging import KeypairType
