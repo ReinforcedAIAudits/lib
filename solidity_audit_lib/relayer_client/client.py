@@ -1,3 +1,5 @@
+from asyncio import timeout
+
 import requests
 
 from solidity_audit_lib.messaging import KeypairType
@@ -11,6 +13,8 @@ __all__ = ['RelayerClient']
 
 
 class RelayerClient(object):
+    DEFAULT_TIMEOUT = 3 * 60
+
     class ClientError(Exception):
         pass
 
@@ -24,7 +28,7 @@ class RelayerClient(object):
         self._id += 1
         return requests.post(f'{self.relayer_url}/api/jsonrpc', json={
             "jsonrpc": "2.0", "id": self._id, "method": method, "params": params
-        }).json()
+        }, timeout=self.DEFAULT_TIMEOUT).json()
 
     def _call(self, method: str, params: dict):
         result = self._call_rpc(method, params)
