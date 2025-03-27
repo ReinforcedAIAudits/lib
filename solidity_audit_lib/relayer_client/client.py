@@ -1,8 +1,6 @@
-from asyncio import timeout
-
 import requests
 
-from solidity_audit_lib.messaging import KeypairType
+from solidity_audit_lib.messaging import KeypairType, MinerResponseMessage
 from solidity_audit_lib.relayer_client.relayer_types import (
     RelayerMessage, RegisterParams, RegisterMessage, MinerStorage, ValidatorStorage, StorageMessage, TaskModel,
     PerformAuditMessage, AxonInfo, ResultModel
@@ -13,22 +11,22 @@ __all__ = ['RelayerClient']
 
 
 class RelayerClient(object):
-    DEFAULT_TIMEOUT = 3 * 60
-
     class ClientError(Exception):
         pass
 
-    def __init__(self, relayer_url: str, network_id: int, subnet_uid: int):
+    def __init__(self, relayer_url: str, network_id: int, subnet_uid: int, timeout: int = 5 * 60):
         self.relayer_url = relayer_url
         self.network_id = network_id
         self.subnet_uid = subnet_uid
         self._id = 0
+        self.timeout = timeout
 
     def _call_rpc(self, method: str, params: dict):
         self._id += 1
-        return requests.post(f'{self.relayer_url}/api/jsonrpc', json={
+        result = requests.post(f'{self.relayer_url}/api/jsonrpc', json={
             "jsonrpc": "2.0", "id": self._id, "method": method, "params": params
-        }, timeout=self.DEFAULT_TIMEOUT).json()
+        }, timeout=self.timeout)
+        return result.json()
 
     def _call(self, method: str, params: dict):
         result = self._call_rpc(method, params)
@@ -64,9 +62,12 @@ class RelayerClient(object):
         msg.sign(signer)
         return ResultModel(**self._call('relayer.set_hotkey_storage', msg.model_dump()))
 
-    def perform_audit(self, signer: KeypairType, uid: int, code: str) -> ResultModel:
+    def perform_audit(self, signer: KeypairType, uid: int, code: str) -> MinerResponseMessage:
         task = TaskModel(uid=uid, contract_code=code)
         task.sign(signer)
         msg = PerformAuditMessage(network_id=self.network_id, subnet_uid=self.subnet_uid, task=task.model_dump())
         msg.sign(signer)
-        return ResultModel(**self._call('miner.perform_audit', msg.model_dump()))
+        result = self._call('miner.perform_audit', msg.model_dump())
+        if 'error' in result:
+            raise self.ClientError(result['error'])
+        return MinerResponseMessage(**result['result'])
