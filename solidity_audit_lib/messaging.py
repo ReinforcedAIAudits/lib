@@ -113,7 +113,7 @@ class ContractTask(SignedMessage):
 
 class MinerResponse(SignedMessage):
     token_id: int
-    collection_id: str
+    collection_id: int
     uid: int
     report: list[VulnerabilityReport]
 
