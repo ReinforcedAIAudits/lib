@@ -120,5 +120,5 @@ class MinerResponse(SignedMessage):
 
 class MinerResponseMessage(SignedMessage):
     success: bool
-    result: MinerResponse | None
-    error: str | None
+    result: MinerResponse | None = Field(default=None)
+    error: str | None = Field(default=None)
