@@ -112,7 +112,8 @@ class ContractTask(SignedMessage):
 
 
 class MinerResponse(SignedMessage):
-    token_ids: list[int]
+    token_ids: list[int] = Field(default_factory=list)
+    token_id: int | None = Field(default=None)
     collection_id: int
     uid: int
     report: list[VulnerabilityReport]
