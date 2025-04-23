@@ -137,3 +137,5 @@ class MedalRequestsMessage(TimestampedMessage):
     medal: typing.Literal["Gold", "Silver", "Bronze"]
     miner_ss58_hotkey: str
     score: float
+    collection_id: int | None = Field(default=None) 
+    token_ids: list[int] = Field(default_factory=list)
