@@ -1,9 +1,9 @@
 import requests
 
-from solidity_audit_lib.messaging import KeypairType, MinerResponseMessage
+from solidity_audit_lib.messaging import KeypairType, MinerResponseMessage, MedalRequestsMessage
 from solidity_audit_lib.relayer_client.relayer_types import (
     RelayerMessage, RegisterParams, RegisterMessage, MinerStorage, ValidatorStorage, StorageMessage, TaskModel,
-    PerformAuditMessage, AxonInfo, ResultModel
+    PerformAuditMessage, AxonInfo, ResultModel, TopMinersMessage
 )
 
 
@@ -71,3 +71,8 @@ class RelayerClient(object):
         if 'error' in result:
             raise self.ClientError(result['error'])
         return MinerResponseMessage(**result['result'])
+
+    def set_top_miners(self, signer: KeypairType, miners: list[MedalRequestsMessage]):
+        msg = TopMinersMessage(network_id=self.network_id, subnet_uid=self.subnet_uid, miners=miners)
+        msg.sign(signer)
+        return ResultModel(**self._call('relayer.set_top_miners', msg.model_dump()))

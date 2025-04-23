@@ -1,4 +1,5 @@
 import json
+import time
 import typing
 
 from bittensor import Keypair as BTKeypair  # Bittensor
@@ -7,7 +8,7 @@ from pydantic.alias_generators import to_camel, to_snake
 from substrateinterface import Keypair as SubstrateKeypair
 
 __all__ = ['KeypairType', 'sign', 'verify', 'SignedMessage', 'AuditBase', 'OpenAIVulnerabilityReport',
-           'VulnerabilityReport', 'ContractTask', 'MinerResponse', 'MinerResponseMessage']
+           'VulnerabilityReport', 'ContractTask', 'MinerResponse', 'MinerResponseMessage', 'TimestampedMessage', 'MedalRequestsMessage']
 
 KeypairType = typing.Union[BTKeypair, SubstrateKeypair]
 
@@ -122,3 +123,17 @@ class MinerResponseMessage(SignedMessage):
     success: bool
     result: MinerResponse | None = Field(default=None)
     error: str | None = Field(default=None)
+
+
+class TimestampedMessage(SignedMessage):
+    timestamp: int | None = Field(default=None)
+
+    def sign(self, keypair: KeypairType):
+        self.timestamp = int(time.time())
+        super().sign(keypair)
+
+
+class MedalRequestsMessage(TimestampedMessage):
+    medal: typing.Literal["Gold", "Silver", "Bronze"]
+    miner_ss58_hotkey: str
+    score: float

@@ -1,11 +1,10 @@
 import pydantic
 
-from solidity_audit_lib.messaging import SignedMessage
-
+from solidity_audit_lib.messaging import SignedMessage, MedalRequestsMessage
 
 __all__ = [
     'RelayerMessage', 'RegisterParams', 'RegisterMessage', 'MinerStorage', 'ValidatorStorage', 'StorageMessage',
-    'TaskModel', 'PerformAuditMessage', 'AxonInfo', 'ResultModel'
+    'TaskModel', 'PerformAuditMessage', 'AxonInfo', 'ResultModel', 'TopMinersMessage'
 ]
 
 
@@ -51,12 +50,16 @@ class PerformAuditMessage(RelayerMessage):
     task: TaskModel
 
 
+class TopMinersMessage(RelayerMessage):
+    miners: list[MedalRequestsMessage]
+
+
 class AxonInfo(pydantic.BaseModel):
     uid: int
     ip: str
     port: int
-    hotkey: str | None
-    coldkey: str | None
+    hotkey: str | None = None
+    coldkey: str | None = None
 
 
 class ResultModel(pydantic.BaseModel):
