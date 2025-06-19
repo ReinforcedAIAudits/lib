@@ -76,3 +76,11 @@ class RelayerClient(object):
         msg = TopMinersMessage(network_id=self.network_id, subnet_uid=self.subnet_uid, miners=miners)
         msg.sign(signer)
         return ResultModel(**self._call('relayer.set_top_miners', msg.model_dump()))
+
+    def get_activation_code(self, signer: KeypairType) -> str:
+        msg = RelayerMessage(network_id=self.network_id, subnet_uid=self.subnet_uid)
+        msg.sign(signer)
+        result = self._call('validator.get_activation_code', msg.model_dump())
+        if 'error' in result:
+            raise self.ClientError(result['error'])
+        return result['result']
