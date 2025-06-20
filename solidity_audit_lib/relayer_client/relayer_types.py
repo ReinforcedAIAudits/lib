@@ -3,8 +3,17 @@ import pydantic
 from solidity_audit_lib.messaging import SignedMessage, MedalRequestsMessage
 
 __all__ = [
-    'RelayerMessage', 'RegisterParams', 'RegisterMessage', 'MinerStorage', 'ValidatorStorage', 'StorageMessage',
-    'TaskModel', 'PerformAuditMessage', 'AxonInfo', 'ResultModel', 'TopMinersMessage'
+    "RelayerMessage",
+    "RegisterParams",
+    "RegisterMessage",
+    "MinerStorage",
+    "ValidatorStorage",
+    "StorageMessage",
+    "TaskModel",
+    "PerformAuditMessage",
+    "AxonInfo",
+    "ResultModel",
+    "TopMinersMessage",
 ]
 
 
@@ -66,3 +75,7 @@ class ResultModel(pydantic.BaseModel):
     success: bool
     error: str | None = None
     result: dict | None = None
+
+
+class RelayerMaintenance(Exception):
+    pass
