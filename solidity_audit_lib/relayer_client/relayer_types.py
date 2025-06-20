@@ -75,7 +75,3 @@ class ResultModel(pydantic.BaseModel):
     success: bool
     error: str | None = None
     result: dict | None = None
-
-
-class RelayerMaintenance(Exception):
-    pass

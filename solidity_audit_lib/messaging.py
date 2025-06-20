@@ -8,7 +8,7 @@ from pydantic.alias_generators import to_camel, to_snake
 from substrateinterface import Keypair as SubstrateKeypair
 
 __all__ = ['KeypairType', 'sign', 'verify', 'SignedMessage', 'AuditBase', 'OpenAIVulnerabilityReport',
-           'VulnerabilityReport', 'ContractTask', 'MinerResponse', 'MinerResponseMessage', 'TimestampedMessage', 'MedalRequestsMessage']
+           'VulnerabilityReport', 'ContractTask', 'MinerResponse', 'MinerResponseMessage', 'TimestampedMessage', 'MedalRequestsMessage', 'RelayerMaintenance']
 
 KeypairType = typing.Union[BTKeypair, SubstrateKeypair]
 
@@ -139,3 +139,7 @@ class MedalRequestsMessage(TimestampedMessage):
     score: float
     collection_id: int | None = Field(default=None) 
     token_ids: list[int] = Field(default_factory=list)
+
+
+class RelayerMaintenance(Exception):
+    pass
