@@ -69,6 +69,7 @@ class AxonInfo(pydantic.BaseModel):
     port: int
     hotkey: str | None = None
     coldkey: str | None = None
+    is_alive: bool = True
 
 
 class ResultModel(pydantic.BaseModel):
