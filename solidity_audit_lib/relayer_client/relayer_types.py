@@ -53,6 +53,7 @@ class StorageMessage(RelayerMessage):
 class TaskModel(SignedMessage):
     uid: int
     contract_code: str
+    validator_version: str | None = None
 
 
 class PerformAuditMessage(RelayerMessage):

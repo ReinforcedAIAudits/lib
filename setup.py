@@ -31,8 +31,8 @@ with open(path.join(here, "README.md"), encoding="utf-8") as f:
     long_description = f.read()
 
 setup(
-    name="solidity-audit-lib",
-    version="0.0.0",
+    name="solidity-audit-client",
+    version="2508.8.1",
     description="Solidity-Audit utility library",
     long_description=long_description,
     long_description_content_type="text/markdown",

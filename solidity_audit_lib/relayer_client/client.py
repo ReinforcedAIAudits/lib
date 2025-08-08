@@ -62,8 +62,8 @@ class RelayerClient(object):
         msg.sign(signer)
         return ResultModel(**self._call('relayer.set_hotkey_storage', msg.model_dump()))
 
-    def perform_audit(self, signer: KeypairType, uid: int, code: str) -> MinerResponseMessage:
-        task = TaskModel(uid=uid, contract_code=code)
+    def perform_audit(self, signer: KeypairType, uid: int, code: str, validator_version: str | None = None) -> MinerResponseMessage:
+        task = TaskModel(uid=uid, contract_code=code, validator_version=validator_version)
         task.sign(signer)
         msg = PerformAuditMessage(network_id=self.network_id, subnet_uid=self.subnet_uid, task=task.model_dump())
         msg.sign(signer)
