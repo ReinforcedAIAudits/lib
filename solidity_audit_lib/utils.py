@@ -5,6 +5,7 @@ import signal
 
 __all__ = ["ViolentPoolExecutor"]
 
+
 class ViolentPoolExecutor(ProcessPoolExecutor):
     def __exit__(self, exc_type, exc_val, exc_tb):
         try:
@@ -14,3 +15,4 @@ class ViolentPoolExecutor(ProcessPoolExecutor):
         super().__exit__(exc_type, exc_val, exc_tb)
         for p in multiprocessing.active_children():
             os.kill(p.pid, signal.SIGKILL)
+            p.join()
