@@ -7,8 +7,21 @@ from pydantic import BaseModel, Field, AliasChoices, AliasGenerator, ConfigDict
 from pydantic.alias_generators import to_camel, to_snake
 from substrateinterface import Keypair as SubstrateKeypair
 
-__all__ = ['KeypairType', 'sign', 'verify', 'SignedMessage', 'AuditBase', 'OpenAIVulnerabilityReport',
-           'VulnerabilityReport', 'ContractTask', 'MinerResponse', 'MinerResponseMessage', 'TimestampedMessage', 'MedalRequestsMessage', 'RelayerMaintenance']
+__all__ = [
+    "KeypairType",
+    "sign",
+    "verify",
+    "SignedMessage",
+    "AuditBase",
+    "OpenAIVulnerabilityReport",
+    "VulnerabilityReport",
+    "ContractTask",
+    "MinerResponse",
+    "MinerResponseMessage",
+    "TimestampedMessage",
+    "MedalRequestsMessage",
+    "RelayerMaintenance",
+]
 
 KeypairType = typing.Union[BTKeypair, SubstrateKeypair]
 
@@ -30,6 +43,9 @@ def verify(data: bytes, signature: str, ss58_address: str, safe=True) -> bool:
 
 
 class SignedMessage(BaseModel):
+    # TODO: make checker for JSON parse extra fields
+    model_config = ConfigDict(extra="allow")
+
     signature: typing.Optional[str] = Field(
         default=None,
     )
@@ -38,7 +54,9 @@ class SignedMessage(BaseModel):
     )
 
     def to_signable(self) -> bytes:
-        return json.dumps(self.model_dump(exclude={"signature", "ss58_address"}), sort_keys=True).encode()
+        return json.dumps(
+            self.model_dump(exclude={"signature", "ss58_address"}), sort_keys=True
+        ).encode()
 
     def sign(self, keypair: KeypairType):
         self.signature, self.ss58_address = sign(self.to_signable(), keypair)
@@ -75,8 +93,8 @@ class AuditBase(BaseModel):
         ...,
         title="Vulnerability Class",
         description="The category of the vulnerability. "
-                    "E.g. Reentrancy, Bad randomness, Forced reception, Integer overflow, Race condition, "
-                    "Unchecked call, Gas griefing, Unguarded function, Invalid Code, et cetera.",
+        "E.g. Reentrancy, Bad randomness, Forced reception, Integer overflow, Race condition, "
+        "Unchecked call, Gas griefing, Unguarded function, Invalid Code, et cetera.",
     )
 
 
@@ -104,7 +122,11 @@ class OpenAIVulnerabilityReport(AuditBase):
 
 
 class VulnerabilityReport(OpenAIVulnerabilityReport):
-    is_suggestion: bool = Field(False, title="Is Suggestion", description="Whether the fix is a suggestion or not")
+    is_suggestion: bool = Field(
+        False,
+        title="Is Suggestion",
+        description="Whether the fix is a suggestion or not",
+    )
 
 
 class ContractTask(SignedMessage):
@@ -137,7 +159,7 @@ class MedalRequestsMessage(TimestampedMessage):
     medal: typing.Literal["Gold", "Silver", "Bronze"]
     miner_ss58_hotkey: str
     score: float
-    collection_id: int | None = Field(default=None) 
+    collection_id: int | None = Field(default=None)
     token_ids: list[int] = Field(default_factory=list)
 
 
