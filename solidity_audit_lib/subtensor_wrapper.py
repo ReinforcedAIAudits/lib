@@ -236,8 +236,8 @@ class SubtensorWrapper:
         wait_for_inclusion=True,
         wait_for_finalization=False,
     ):
-        tempo, commit_reveal_period = self.get_tempo_and_commit_reveal_period()
-        current_block = self.api.get_block_number(self.api.get_block_hash())
+        tempo, commit_reveal_period = self.get_tempo_and_commit_reveal_period(net_uid)
+        current_block = self.api.get_block_number(self.api.get_chain_finalised_head())
         max_weight = max(weights.values()) or 1
         normalized_weights = {
             k: int((v / max_weight) * self.U16_MAX) for k, v in weights.items()
