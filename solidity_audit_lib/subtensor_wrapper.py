@@ -229,7 +229,7 @@ class SubtensorWrapper:
         self,
         signer: Keypair,
         net_uid: int,
-        weights: dict[int, int],
+        weights: dict[int, int | float],
         period: int | None = None,
         commit_reveal_version: int = 4,
         block_time: int | float = 12,
@@ -238,7 +238,12 @@ class SubtensorWrapper:
     ):
         tempo, commit_reveal_period = self.get_tempo_and_commit_reveal_period()
         current_block = self.api.get_block_number(self.api.get_block_hash())
-        flat_uids, flat_weights = zip(*weights.items())
+        max_weight = max(weights.values()) or 1
+        normalized_weights = {
+            k: int((v / max_weight) * self.U16_MAX) for k, v in weights.items()
+        }
+        flat_uids, flat_weights = zip(*normalized_weights.items())
+
         commit_for_reveal, reveal_round = get_encrypted_commit(
             flat_uids,
             flat_weights,
