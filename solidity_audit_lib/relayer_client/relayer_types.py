@@ -10,7 +10,7 @@ __all__ = [
     "ValidatorStorage",
     "StorageMessage",
     "TaskModel",
-    "PerformAuditMessage",
+    "PerformScanMessage",
     "AxonInfo",
     "ResultModel",
     "TopMinersMessage",
@@ -56,7 +56,7 @@ class TaskModel(SignedMessage):
     validator_version: str | None = None
 
 
-class PerformAuditMessage(RelayerMessage):
+class PerformScanMessage(RelayerMessage):
     task: TaskModel
 
 

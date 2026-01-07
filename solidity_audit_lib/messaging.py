@@ -12,7 +12,7 @@ __all__ = [
     "sign",
     "verify",
     "SignedMessage",
-    "AuditBase",
+    "ScanBase",
     "OpenAIVulnerabilityReport",
     "VulnerabilityReport",
     "ContractTask",
@@ -65,7 +65,7 @@ class SignedMessage(BaseModel):
         return verify(self.to_signable(), self.signature, self.ss58_address, safe=safe)
 
 
-class AuditBase(BaseModel):
+class ScanBase(BaseModel):
     model_config = ConfigDict(
         alias_generator=AliasGenerator(
             validation_alias=lambda field_name: AliasChoices(
@@ -98,7 +98,7 @@ class AuditBase(BaseModel):
     )
 
 
-class OpenAIVulnerabilityReport(AuditBase):
+class OpenAIVulnerabilityReport(ScanBase):
     test_case: str | None = Field(
         None,
         title="Test Case",

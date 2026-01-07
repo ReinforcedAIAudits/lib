@@ -3,7 +3,7 @@ import requests
 from solidity_audit_lib.messaging import KeypairType, MinerResponseMessage, MedalRequestsMessage
 from solidity_audit_lib.relayer_client.relayer_types import (
     RelayerMessage, RegisterParams, RegisterMessage, MinerStorage, ValidatorStorage, StorageMessage, TaskModel,
-    PerformAuditMessage, AxonInfo, ResultModel, TopMinersMessage
+    PerformScanMessage, AxonInfo, ResultModel, TopMinersMessage
 )
 
 
@@ -62,10 +62,10 @@ class RelayerClient(object):
         msg.sign(signer)
         return ResultModel(**self._call('relayer.set_hotkey_storage', msg.model_dump()))
 
-    def perform_audit(self, signer: KeypairType, uid: int, code: str, validator_version: str | None = None) -> MinerResponseMessage:
+    def perform_scan(self, signer: KeypairType, uid: int, code: str, validator_version: str | None = None) -> MinerResponseMessage:
         task = TaskModel(uid=uid, contract_code=code, validator_version=validator_version)
         task.sign(signer)
-        msg = PerformAuditMessage(network_id=self.network_id, subnet_uid=self.subnet_uid, task=task.model_dump())
+        msg = PerformScanMessage(network_id=self.network_id, subnet_uid=self.subnet_uid, task=task.model_dump())
         msg.sign(signer)
         result = self._call('miner.perform_audit', msg.model_dump())
         if 'error' in result:
