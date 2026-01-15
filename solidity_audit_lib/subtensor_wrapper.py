@@ -37,7 +37,6 @@ class SubtensorWrapper:
         )
 
     def __enter__(self):
-        self.api.initialize()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
