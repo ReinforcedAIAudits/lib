@@ -40,12 +40,7 @@ class SubtensorWrapper:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.api.close()
-        self.api.get_parent_block_hash.cache_clear()
-        self.api.get_block_runtime_info.cache_clear()
-        self.api.get_block_runtime_version_for.cache_clear()
-        self.api.supports_rpc_method.cache_clear()
-        self.api.get_block_hash.cache_clear()
+        self.api.__exit__(exc_type, exc_val, exc_tb)
 
     def _submit_call(
         self,
