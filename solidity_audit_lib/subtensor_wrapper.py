@@ -1,5 +1,5 @@
 from bittensor.core.chain_data import MetagraphInfo
-from bittensor.core.settings import version_as_int, SS58_FORMAT, TYPE_REGISTRY
+from bittensor.core.settings import version_as_int, TYPE_REGISTRY
 from bittensor.utils import networking as net
 from bittensor_drand.bittensor_drand import get_encrypted_commit
 from substrateinterface import SubstrateInterface, Keypair
@@ -31,7 +31,7 @@ class SubtensorWrapper:
     def __init__(self, ws_endpoint: str):
         self.api = SubstrateInterface(
             url=ws_endpoint,
-            ss58_format=SS58_FORMAT,
+            ss58_format=42,
             type_registry=TYPE_REGISTRY,
             use_remote_preset=True,
             chain_name="Bittensor",
