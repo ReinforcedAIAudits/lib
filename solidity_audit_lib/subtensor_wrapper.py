@@ -34,7 +34,6 @@ class SubtensorWrapper:
             ss58_format=42,
             type_registry=TYPE_REGISTRY,
             use_remote_preset=True,
-            chain_name="Bittensor",
         )
 
     def __enter__(self):
