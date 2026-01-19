@@ -146,12 +146,19 @@ class SubtensorWrapper:
             diff = abs(current_block - already_serving["block"])
             if diff < min_diff:
                 return False, {"name": "RateLimit", "blocks": abs(diff - min_diff)}
+        
+        try:
+            ip = net.ip_to_int(ip)
+            ip_type = net.ip_version(ip)
+        except:
+            ip = ip
+            ip_type = "unknown"
 
         call_params = {
             "version": version_as_int,
-            "ip": net.ip_to_int(ip),
+            "ip": ip,
             "port": port,
-            "ip_type": net.ip_version(ip),
+            "ip_type": ip_type,
             "netuid": net_uid,
             "protocol": 4,
             "placeholder1": 0,
