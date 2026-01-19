@@ -1,4 +1,5 @@
 bittensor>=10.0.1
+async-substrate-interface>=1.5.15
 bittensor-drand>=1.2.0
 substrate-interface==1.7.11
 sr25519-ecdh==0.1.0

@@ -1,8 +1,7 @@
+from async_substrate_interface.sync_substrate import SubstrateInterface, Keypair
 from bittensor.core.chain_data import MetagraphInfo
 from bittensor.core.settings import version_as_int, TYPE_REGISTRY
 from bittensor.utils import networking as net
-from bittensor_drand.bittensor_drand import get_encrypted_commit
-from substrateinterface import SubstrateInterface, Keypair
 from scalecodec.types import GenericCall
 
 __all__ = ["SubtensorWrapper"]
