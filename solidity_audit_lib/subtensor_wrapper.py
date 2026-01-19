@@ -85,7 +85,11 @@ class SubtensorWrapper:
                 else:
                     axon_key = key
                 try:
-                    axon[axon_key] = getattr(metagraph, key)[i]
+                    attr = getattr(metagraph, key)
+                    if i < len(attr):
+                        axon[axon_key] = attr[i]
+                    else:
+                        axon[axon_key] = None
                 except KeyError:
                     if key != "identities":
                         raise
